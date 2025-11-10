@@ -1,0 +1,20 @@
+PORTFOLIO DEVELOPMENT PROMPT LOG
+
+PHASE 1: INITIAL SETUP & FEATURES
+1. Initial Snippets: "Generate a basic HTML/CSS structure for a modern, minimalist single-page portfolio website."
+2. Dark Mode/Light Mode: "Implement a fully functional dark mode toggle using CSS variables and JavaScript, ensuring the default state is light mode."
+
+PHASE 2: CONTENT & REFINEMENT
+3. Content Addition: "Replace all placeholder text with professional content for 'About Me,' 'Experience,' and 'Skills' sections."
+4. Image Replacement: "Replace all existing stock images with new high-resolution, contextually relevant images for the project section."
+5. Scrolling Fixes: "Debug and resolve all horizontal scrolling issues and vertical overflow errors on mobile viewport sizes."
+6. Scrolling Fixes (Specific): "Examine the main content container and the fixed navigation bar, adjust their CSS properties (e.g., overflow: hidden, min-height) to eliminate janky scrolling behavior."
+
+PHASE 3: DESIGN & LAYOUT
+7. Card Implementation (Projects): "Refactor the Project section layout to display each project item within a distinct, elevated card component with a subtle shadow effect."
+8. Card Implementation (Contact): "Convert the 'Contact Me' section form and information into a single, cohesive card layout for better visual grouping."
+9. Image Consolidation: "Remove all individual project images and replace them with a single, highly detailed, zoomed-in image banner that represents the entire portfolio's design aesthetic."
+
+PHASE 4: PERSONALIZATION & FINAL FIX
+10. Adding Personal Image: "Integrate my personal headshot (image file: sanketh_photo.jpg) into the 'About Me' section, ensuring it is properly sized and centered."
+11. Image Loading Fix: "Debug the newly added image component; identify and correct the path or file extension error preventing 'sanketh_photo.jpg' from loading in the browser."
