@@ -1,0 +1,72 @@
+.theme-toggle {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.theme-icon {
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover .theme-icon {
+  transform: rotate(15deg);
+}
+
+.theme-toggle.light {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.theme-toggle.light:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .theme-toggle {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .theme-toggle {
+    width: 45px;
+    height: 45px;
+    font-size: 1rem;
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
+
