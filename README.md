@@ -1,65 +1,33 @@
-# Portfolio React App with Parallax Scrolling
+# Sanketh's Portfolio
 
-A modern portfolio website built with React and Vite, featuring smooth parallax scrolling effects across 5 sections.
+A modern, responsive portfolio website built with React and Vite.
 
-## Features
+## Technologies Used
+- React
+- Vite
+- GSAP for animations
+- CSS with modern features
 
-- 🎨 5 Beautiful sections with gradient backgrounds
-- ✨ Smooth parallax scrolling effects
-- 📱 Responsive design
-- 🚀 Fast development with Vite
-- 💫 Modern UI with glassmorphism effects
+## Local Development
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start development server:
+   ```bash
+   npm run dev
+   ```
+4. Open http://localhost:3000
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v16 or higher)
-- npm or yarn
-
-### Installation
-
-1. Install dependencies:
-```bash
-npm install
-```
-
-### Running the App
-
-Start the development server:
-```bash
-npm run dev
-```
-
-The app will be available at `http://localhost:5173`
-
-### Building for Production
-
-Build the app for production:
+## Build
+To build for production:
 ```bash
 npm run build
 ```
 
-Preview the production build:
+## Preview Production Build
 ```bash
 npm run preview
 ```
-
-## Sections
-
-1. **Hero** - Welcome section
-2. **About** - About me section
-3. **Projects** - Projects showcase
-4. **Skills** - Skills and expertise
-5. **Contact** - Contact information
-
-## Technologies Used
-
-- React 18
-- Vite
-- CSS3 (Parallax effects, animations, gradients)
-
-## License
-
-MIT
 
