@@ -1,0 +1,125 @@
+{
+  "hero": {
+    "name": "Sanketh Patil",
+    "tagline": "Product-minded engineer turning strategy, data, and AI into real-world impact.",
+    "summary": "Full-stack builder crafting fast, minimal, insight-driven experiences with quiet confidence and thoughtful motion.",
+    "location": "West Lafayette, IN",
+    "availability": "Minimal • Analytical • AI-Forward",
+    "traits": ["Minimal", "Analytical", "AI-Forward"],
+    "actions": [
+      { "label": "View work", "href": "#projects" },
+      { "label": "Contact", "href": "#contact" }
+    ]
+  },
+  "about": {
+    "bio": "I didn’t start by wanting to code—I wanted to understand why products win. So I learned to build to think like a product owner: test hypotheses, turn strategy into something real, and move from insight → interface → impact. Today I ship minimal, data-forward products at the intersection of AI, business strategy, and human behavior. I care about leverage. I care about clarity. I care about shipping things that compound.",
+    "focus": [
+      "Insight → interface → impact",
+      "AI × business strategy × behavior",
+      "Hypothesis-driven product cycles",
+      "Shipping minimal, data-forward products"
+    ],
+    "productStrategy": [
+      "Market analysis",
+      "GTM thinking",
+      "User research synthesis",
+      "Hypothesis-driven development",
+      "Metrics & experimentation"
+    ],
+    "technicalExecution": [
+      "React (for fast iteration & UI clarity)",
+      "TypeScript",
+      "APIs & backend logic (Node / Python when needed)",
+      "Data visualization (D3 / dashboards)",
+      "Rapid prototyping"
+    ],
+    "principles": [
+      "Build to learn",
+      "Speed creates surface area for luck",
+      "Data > ego",
+      "Clarity scales",
+      "Ambition with discipline"
+    ]
+  },
+  "projects": [
+    {
+      "title": "Siemens Energy x NVIDIA Industrial AI Ecosystem (SMRs)",
+      "description": "Designed a Wintel-style industrial AI ecosystem for small modular reactors, blending Siemens hardware with NVIDIA twins to cut LCOE by 9-12% and speed regulatory readiness.",
+      "year": 2025,
+      "tags": ["Product strategy", "Market analysis", "GTM", "Financial modeling", "AI simulation"],
+      "link": "#"
+    },
+    {
+      "title": "J&J Budget Analytics Agentic AI",
+      "description": "Built agentic AI for Johnson & Johnson budgeting workflows, enabling real-time analytics, faster responses, and anomaly flagging with research-backed segmentation.",
+      "year": 2025,
+      "tags": ["AI agents", "Analytics", "Research", "Purdue", "Johnson & Johnson"],
+      "link": "#"
+    },
+    {
+      "title": "AI Persona-Targeted OTT Content Optimization",
+      "description": "Created NLP-driven personalization and SEO/A-B testing pipelines that raised engagement on OTT surfaces and cut manual content effort by about half.",
+      "year": 2024,
+      "tags": ["Python", "NLP", "SEO", "A/B testing", "Personalization"],
+      "link": "#"
+    },
+    {
+      "title": "RAG AI Assistant for MongoDB",
+      "description": "Built a RAG assistant with multi-format ingestion, vector search, and source-grounded GPT-4 responses to slash hallucinations and deliver sub-second answers.",
+      "year": 2024,
+      "tags": ["RAG", "LangChain", "MongoDB", "OpenAI", "FastAPI"],
+      "link": "#"
+    },
+    {
+      "title": "Discovery Growth for Video Platforms",
+      "description": "Uncovered discovery blind spots, separated relevance vs context failures, and delivered feed optimizations that improved engagement by roughly 12%.",
+      "year": 2023,
+      "tags": ["Product analytics", "SQL", "Experimentation", "Engagement"],
+      "link": "#"
+    },
+    {
+      "title": "Intellekt AI for SAP Automation",
+      "description": "Advised on SAP BTP workflows and wrapper APIs to reduce billing disputes by 30-40% and improve cash flow through automated vendor and payroll ops.",
+      "year": 2023,
+      "tags": ["SAP BTP", "Automation", "APIs", "Billing"],
+      "link": "#"
+    }
+  ],
+  "highlights": [
+    {
+      "title": "Build to understand",
+      "detail": "Map the system first—leverage, value accrual, failure modes—then build to test that model. Shipping is how hypotheses get proved or killed."
+    },
+    {
+      "title": "Strategy before surface",
+      "detail": "Interface follows distribution, incentives, and positioning. Most product failures start with weak strategy, not weak UI."
+    },
+    {
+      "title": "AI as leverage, not novelty",
+      "detail": "Use AI where automation reduces cognitive load, intelligence creates defensibility, and data compounds over time—not because it’s trendy."
+    },
+    {
+      "title": "Turn ambiguity into structure",
+      "detail": "Break business cases, GTM plans, or messy ideas into hypotheses, metrics, and execution paths."
+    },
+    {
+      "title": "Calm intensity",
+      "detail": "Move fast without panic-building. Clarity over noise; signal over ego."
+    }
+  ],
+  "metrics": [
+    { "label": "Launches", "value": 12 },
+    { "label": "Dashboards", "value": 18 },
+    { "label": "Experiments", "value": 45 },
+    { "label": "Design revs", "value": 60 },
+    { "label": "APIs built", "value": 22 },
+    { "label": "Nightly builds", "value": 90 }
+  ],
+  "contact": {
+    "email": "patil232@purdue.edu",
+    "social": [
+      { "label": "GitHub", "href": "https://github.com/sankethrajpatil" },
+      { "label": "LinkedIn", "href": "https://www.linkedin.com/in/sanketh-raj-patil/" }
+    ]
+  }
+}
