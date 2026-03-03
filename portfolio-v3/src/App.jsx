@@ -3,7 +3,8 @@ import DancingBars from './components/DancingBars'
 import './index.css'
 
 const fetchPortfolio = async () => {
-  const response = await fetch('/portfolio.json')
+  const base = import.meta.env.BASE_URL || '/'
+  const response = await fetch(`${base}portfolio.json`)
   if (!response.ok) {
     throw new Error('Unable to load portfolio data')
   }
