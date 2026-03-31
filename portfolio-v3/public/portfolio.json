@@ -43,6 +43,13 @@
   },
   "projects": [
     {
+      "title": "Intelligent Dispatcher – AI-Driven Prescriptive Maintenance (2nd Place @ Cummins AI Hackathon)",
+      "description": "Architected an end-to-end Predictive Maintenance system for Cummins engines, integrating IoT telemetry with SAP BNAC. Developed an Agentic AI “Dispatcher” using GPT-4o and RAG to automate root-cause analysis and prescribe specific toolkits, reducing “Second Visit” costs by 40% and restoring engine uptime 50% faster.",
+      "year": 2024,
+      "tags": ["AI Agents", "IoT", "SAP BNAC", "RAG", "Predictive Maintenance"],
+      "link": "https://www.youtube.com/watch?v=example"
+    },
+    {
       "title": "Siemens Energy x NVIDIA Industrial AI Ecosystem (SMRs)",
       "description": "Designed a Wintel-style industrial AI ecosystem for small modular reactors, blending Siemens hardware with NVIDIA twins to cut LCOE by 9-12% and speed regulatory readiness.",
       "year": 2025,
