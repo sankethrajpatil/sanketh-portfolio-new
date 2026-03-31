@@ -1,222 +1,53 @@
-import React, { useEffect, useState } from 'react'
-import { gsap } from 'gsap'
-import Section from './components/Section'
-import ThemeToggle from './components/ThemeToggle'
-import './styles.css'
+import React, { useEffect, useState, useMemo } from "react"
+import { gsap } from "gsap"
+import Section from "./components/Section"
+import ThemeToggle from "./components/ThemeToggle"
+import ProjectsPage from "./components/ProjectsPage"
+import "./styles.css"
 
 const App = () => {
+  const [projects, setProjects] = useState([])
+  const [currentPage, setCurrentPage] = useState("landing") 
+  const [targetProjectId, setTargetProjectId] = useState(null)
+  
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Check localStorage for saved theme preference, default to dark mode
-    const savedTheme = localStorage.getItem('theme')
-    return savedTheme ? savedTheme === 'dark' : true
+    const savedTheme = localStorage.getItem("theme")
+    return savedTheme ? savedTheme === "dark" : true
   })
 
   useEffect(() => {
-    // Save theme preference to localStorage
-    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light')
-    // Apply theme class to body for global styling
-    document.body.className = isDarkMode ? 'dark-mode' : 'light-mode'
+    fetch("/projects.json")
+      .then(res => res.json())
+      .then(data => setProjects(data))
+      .catch(err => console.error("Failed to load projects:", err))
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light")
+    document.body.className = isDarkMode ? "dark-mode" : "light-mode"
   }, [isDarkMode])
 
   const toggleTheme = () => {
     setIsDarkMode(prev => !prev)
   }
-  useEffect(() => {
-    let sections = document.querySelectorAll(".section"),
-      bgImages = document.querySelectorAll(".bg-image"),
-      headings = document.querySelectorAll(".section-title"),
-      outerWrappers = document.querySelectorAll(".wrapper-outer"),
-      innerWrappers = document.querySelectorAll(".wrapper-inner"),
-      currentIndex = -1,
-      wrap = (index, max) => (index + max) % max,
-      animating
 
-  gsap.set(outerWrappers, { yPercent: 100 })
-  gsap.set(innerWrappers, { yPercent: -100 })
-  // ensure bg-image has neutral starting transform
-  gsap.set(bgImages, { scale: 1, yPercent: 0 })
+  const navigateToProjects = (id) => {
+    setTargetProjectId(id);
+    setCurrentPage("projects");
+  };
 
-    // keep a single active timeline to avoid overlap/multiple jumps
-    let activeTimeline = null
-
-    function gotoSection(index, direction) {
-      index = wrap(index, sections.length)
-      if (animating || index === currentIndex) return
-      animating = true
-
-      let fromTop = direction === -1
-      let dFactor = fromTop ? -1 : 1
-      // kill any running timeline to prevent compounded animations
-      if (activeTimeline) {
-        activeTimeline.kill()
-        activeTimeline = null
-      }
-      let tl = gsap.timeline({ 
-        defaults: { duration: 1.1, ease: "power2.inOut" }, 
-        onComplete: () => (animating = false) 
-      })
-      activeTimeline = tl
-
-      if (currentIndex >= 0) {
-        gsap.set(sections[currentIndex], { zIndex: 0 })
-        tl.to(bgImages[currentIndex], { yPercent: -15 * dFactor })
-          .set(sections[currentIndex], { autoAlpha: 0 })
-      }
-
-      gsap.set(sections[index], { autoAlpha: 1, zIndex: 1 })
-      tl.fromTo(
-        [outerWrappers[index], innerWrappers[index]], 
-        { yPercent: (i) => (i ? -100 * dFactor : 100 * dFactor) }, 
-        { yPercent: 0 }, 
-        0
-      )
-        .fromTo(
-          bgImages[index], 
-          { yPercent: 15 * dFactor }, 
-          { yPercent: 0 }, 
-          0
-        )
-        .fromTo(
-          headings[index], 
-          { autoAlpha: 0, yPercent: 150 * dFactor }, 
-          {
-            autoAlpha: 1,
-            yPercent: 0,
-            duration: 1,
-            ease: "power2",
-          }, 
-          0.2
-        )
-
-      // progressive zoom: each section's bg-image scales slightly more
-      const ZOOM_STEP = 0.06
-      // animate the target bg-image to a scale based on its index
-      const targetScale = 1 + index * ZOOM_STEP
-      tl.to(bgImages[index], { scale: targetScale, duration: 1.1, ease: 'power2.inOut' }, 0)
-      // gently reset other bg-images to a smaller scale so active one stands out
-      for (let i = 0; i < bgImages.length; i++) {
-        if (i !== index) {
-          const otherTarget = 1 + Math.max(0, i * ZOOM_STEP - ZOOM_STEP)
-          tl.to(bgImages[i], { scale: otherTarget, duration: 1.1, ease: 'power2.inOut' }, 0)
-        }
-      }
-
-      currentIndex = index
-    }
-
-    function navigateSectionById(id) {
-      let index = Array.from(sections).findIndex(section => section.id === id)
-
-      if (index !== -1 && index !== currentIndex) {
-        gotoSection(index, index > currentIndex ? 1 : -1)
-      }
-    }
-
-    let lastTap = 0
-    let wheelTimeout = null
-    let wheelAccum = 0
-    let lastWheelTs = 0
-
-    const handleTouchEnd = function (event) {
-      let currentTime = new Date().getTime()
-      let tapLength = currentTime - lastTap
-      if (tapLength < 500 && tapLength > 0 && !animating) {
-        gotoSection(currentIndex + 1, 1)
-        event.preventDefault()
-      }
-      lastTap = currentTime
-    }
-
-    const handleWheel = (event) => {
-      // normalize delta across browsers (deltaMode 1 = lines; 0 = pixels)
-      let delta = event.deltaY
-      if (event.deltaMode === 1) {
-        delta *= 16 // approximate line height
-      }
-      const now = Date.now()
-      // decay accumulation if there was a long pause
-      if (now - lastWheelTs > 300) wheelAccum = 0
-      lastWheelTs = now
-
-      // build an accumulated threshold to avoid micro-scrolling triggers
-      wheelAccum += delta
-      const ACC_THRESHOLD = 90
-
-      // Check if scrolling within a content section
-      const contentWrapper = event.target.closest('.content-wrapper')
-      if (contentWrapper) {
-        const isAtTop = contentWrapper.scrollTop === 0
-        const isAtBottom = contentWrapper.scrollHeight - contentWrapper.scrollTop <= contentWrapper.clientHeight + 5
-        
-        // Allow scrolling within content if not at boundaries
-        if ((delta < 0 && !isAtTop) || (delta > 0 && !isAtBottom)) {
-          return // Let normal scroll happen
-        }
-        
-        // At boundary, prevent default and navigate sections
-        if ((delta < 0 && isAtTop) || (delta > 0 && isAtBottom)) {
-          event.preventDefault()
-        }
-      }
-
-      // Throttle section navigation
-      if (wheelTimeout) return
-      
-      wheelTimeout = setTimeout(() => {
-        wheelTimeout = null
-      }, 250)
-
-      if (!animating && Math.abs(wheelAccum) >= ACC_THRESHOLD) {
-        const dir = wheelAccum < 0 ? -1 : 1
-        // reset accumulation right away to prevent double fire
-        wheelAccum = 0
-        if (dir < 0) {
-          gotoSection(currentIndex - 1, -1)
-        } else {
-          gotoSection(currentIndex + 1, 1)
-        }
-      }
-    }
-
-    const handleNavClick = (e) => {
-      e.preventDefault()
-      navigateSectionById(e.currentTarget.getAttribute("href").slice(1))
-    }
-
-    document.addEventListener("touchend", handleTouchEnd)
-    // passive: false is required so we can preventDefault at boundaries
-    window.addEventListener("wheel", handleWheel, { passive: false })
-
-    document.querySelectorAll("nav a").forEach(a => {
-      a.addEventListener("click", handleNavClick)
-    })
-
-    gotoSection(0, 1)
-
-    return () => {
-      window.removeEventListener("wheel", handleWheel)
-      document.removeEventListener("touchend", handleTouchEnd)
-      document.querySelectorAll("nav a").forEach(a => {
-        a.removeEventListener("click", handleNavClick)
-      })
-      if (wheelTimeout) {
-        clearTimeout(wheelTimeout)
-      }
-    }
-  }, [])
-
-  const sections = [
+  const sections = useMemo(() => [
     {
-      id: 'first',
-      title: 'Welcome to My Portfolio',
-      className: 'first',
+      id: "first",
+      title: "Welcome to My Portfolio",
+      className: "first",
       isLanding: true,
-      imageUrl: '/sanketh-photo.jpg'
+      imageUrl: "/sanketh-photo.jpg"
     },
     {
-      id: 'education',
-      title: 'Education',
-      className: 'second',
+      id: "education",
+      title: "Education",
+      className: "second",
       content: `
         <div class="about-content">
           <div class="education-section">
@@ -238,9 +69,9 @@ const App = () => {
       `
     },
     {
-      id: 'work',
-      title: 'Work Experience',
-      className: 'third',
+      id: "work",
+      title: "Work Experience",
+      className: "third",
       content: `
         <div class="about-content">
           <div class="experience-section">
@@ -258,7 +89,7 @@ const App = () => {
             </div>
             <div class="exp-item">
               <h4>SAP, Developer Intern</h4>
-              <p class="location">Bangalore, India | January 2022 â€“ July 2022</p>
+              <p class="location">Bangalore, India | January 2022 – July 2022</p>
               <ul>
                 <li>Implemented custom error messages for SAP ByD using ABAP, enhancing user clarity by up to 10%</li>
               </ul>
@@ -268,33 +99,25 @@ const App = () => {
       `
     },
     {
-      id: 'projects',
-      title: 'My Projects',
-      className: 'fourth',
+      id: "projects",
+      title: "My Projects",
+      className: "fourth",
       content: `
         <div class="projects-content">
-          <div class="project-item">
-            <h3>Intellekt AI for SAP</h3>
-            <p>As an SAP consultant to Intellekt AI, advised on product selection and workflow design; integrated SAP BTP Cloud Platform for AI in payroll and vendor management</p>
-            <ul>
-              <li>Designed automation workflows using wrapper APIs to address $2B+ in annual billing errors</li>
-              <li>Reduced billing-related disputes by 30-40% pre-escalation, improving cash flows</li>
-            </ul>
-          </div>
-          <div class="project-item">
-            <h3>Supply Chain Risk Monitoring</h3>
-            <p>Led the product roadmap using predictive modeling and data lake house architecture to track supplier risks.</p>
-            <ul>
-              <li>Defined product roadmap using MoSCOW framework, aligning customer pain points and business goals</li>
-            </ul>
-          </div>
+          ${projects.map(project => `
+            <div class="project-item">
+              <h3>${project.title}</h3>
+              <p>${project.tagline}</p>
+              <button class="view-project-btn" data-id="${project.id}">View</button>
+            </div>
+          `).join("")}
         </div>
       `
     },
     {
-      id: 'skills',
-      title: 'Skills & Expertise',
-      className: 'fifth',
+      id: "skills",
+      title: "Skills & Expertise",
+      className: "fifth",
       content: `
         <div class="skills-content">
           <div class="skills-card">
@@ -330,9 +153,9 @@ const App = () => {
       `
     },
     {
-      id: 'contact',
-      title: 'Get In Touch',
-      className: 'fifth',
+      id: "contact",
+      title: "Get In Touch",
+      className: "fifth",
       content: `
         <div class="contact-content">
           <div class="contact-info">
@@ -356,7 +179,203 @@ const App = () => {
         </div>
       `
     },
-  ]
+  ], [projects]);
+
+  useEffect(() => {
+    if (currentPage !== "landing") return;
+    let sectionsSelector = document.querySelectorAll(".section"),
+      bgImages = document.querySelectorAll(".bg-image"),
+      headings = document.querySelectorAll(".section-title"),
+      outerWrappers = document.querySelectorAll(".wrapper-outer"),
+      innerWrappers = document.querySelectorAll(".wrapper-inner"),
+      currentIndex = -1,
+      wrap = (index, max) => (index + max) % max,
+      animating
+
+  gsap.set(outerWrappers, { yPercent: 100 })
+  gsap.set(innerWrappers, { yPercent: -100 })
+  gsap.set(bgImages, { scale: 1, yPercent: 0 })
+
+    let activeTimeline = null
+
+    function gotoSection(index, direction) {
+      index = wrap(index, sectionsSelector.length)
+      if (animating || index === currentIndex) return
+      animating = true
+
+      let fromTop = direction === -1
+      let dFactor = fromTop ? -1 : 1
+      if (activeTimeline) {
+        activeTimeline.kill()
+        activeTimeline = null
+      }
+      let tl = gsap.timeline({ 
+        defaults: { duration: 1.1, ease: "power2.inOut" }, 
+        onComplete: () => (animating = false) 
+      })
+      activeTimeline = tl
+
+      if (currentIndex >= 0) {
+        gsap.set(sectionsSelector[currentIndex], { zIndex: 0 })
+        tl.to(bgImages[currentIndex], { yPercent: -15 * dFactor })
+          .set(sectionsSelector[currentIndex], { autoAlpha: 0 })
+      }
+
+      gsap.set(sectionsSelector[index], { autoAlpha: 1, zIndex: 1 })
+      tl.fromTo(
+        [outerWrappers[index], innerWrappers[index]], 
+        { yPercent: (i) => (i ? -100 * dFactor : 100 * dFactor) }, 
+        { yPercent: 0 }, 
+        0
+      )
+        .fromTo(
+          bgImages[index], 
+          { yPercent: 15 * dFactor }, 
+          { yPercent: 0 }, 
+          0
+        )
+        .fromTo(
+          headings[index], 
+          { autoAlpha: 0, yPercent: 150 * dFactor }, 
+          {
+            autoAlpha: 1,
+            yPercent: 0,
+            duration: 1,
+            ease: "power2",
+          }, 
+          0.2
+        )
+
+      const ZOOM_STEP = 0.06
+      const targetScale = 1 + index * ZOOM_STEP
+      tl.to(bgImages[index], { scale: targetScale, duration: 1.1, ease: "power2.inOut" }, 0)
+      for (let i = 0; i < bgImages.length; i++) {
+        if (i !== index) {
+          const otherTarget = 1 + Math.max(0, i * ZOOM_STEP - ZOOM_STEP)
+          tl.to(bgImages[i], { scale: otherTarget, duration: 1.1, ease: "power2.inOut" }, 0)
+        }
+      }
+
+      currentIndex = index
+    }
+
+    function navigateSectionById(id) {
+      let index = Array.from(sectionsSelector).findIndex(section => section.id === id)
+
+      if (index !== -1 && index !== currentIndex) {
+        gotoSection(index, index > currentIndex ? 1 : -1)
+      }
+    }
+
+    let lastTap = 0
+    let wheelTimeout = null
+    let wheelAccum = 0
+    let lastWheelTs = 0
+
+    const handleTouchEnd = function (event) {
+      let currentTime = new Date().getTime()
+      let tapLength = currentTime - lastTap
+      if (tapLength < 500 && tapLength > 0 && !animating) {
+        gotoSection(currentIndex + 1, 1)
+        event.preventDefault()
+      }
+      lastTap = currentTime
+    }
+
+    const handleWheel = (event) => {
+      let delta = event.deltaY
+      if (event.deltaMode === 1) {
+        delta *= 16 
+      }
+      const now = Date.now()
+      if (now - lastWheelTs > 300) wheelAccum = 0
+      lastWheelTs = now
+
+      wheelAccum += delta
+      const ACC_THRESHOLD = 90
+
+      const contentWrapper = event.target.closest(".content-wrapper")
+      if (contentWrapper) {
+        const isAtTop = contentWrapper.scrollTop === 0
+        const isAtBottom = contentWrapper.scrollHeight - contentWrapper.scrollTop <= contentWrapper.clientHeight + 5
+        
+        if ((delta < 0 && !isAtTop) || (delta > 0 && !isAtBottom)) {
+          return 
+        }
+        
+        if ((delta < 0 && isAtTop) || (delta > 0 && isAtBottom)) {
+          event.preventDefault()
+        }
+      }
+
+      if (wheelTimeout) return
+      
+      wheelTimeout = setTimeout(() => {
+        wheelTimeout = null
+      }, 250)
+
+      if (!animating && Math.abs(wheelAccum) >= ACC_THRESHOLD) {
+        const dir = wheelAccum < 0 ? -1 : 1
+        wheelAccum = 0
+        if (dir < 0) {
+          gotoSection(currentIndex - 1, -1)
+        } else {
+          gotoSection(currentIndex + 1, 1)
+        }
+      }
+    }
+
+    const handleNavClick = (e) => {
+      e.preventDefault()
+      navigateSectionById(e.currentTarget.getAttribute("href").slice(1))
+    }
+
+    const handleViewProjectClick = (e) => {
+      const projectId = e.target.getAttribute("data-id");
+      if (projectId) {
+        navigateToProjects(projectId);
+      }
+    };
+
+    document.addEventListener("touchend", handleTouchEnd)
+    window.addEventListener("wheel", handleWheel, { passive: false })
+
+    document.querySelectorAll("nav a").forEach(a => {
+      a.addEventListener("click", handleNavClick)
+    })
+
+    document.querySelectorAll(".view-project-btn").forEach(btn => {
+      btn.addEventListener("click", handleViewProjectClick)
+    });
+
+    gotoSection(0, 1)
+
+    return () => {
+      window.removeEventListener("wheel", handleWheel)
+      document.removeEventListener("touchend", handleTouchEnd)
+      document.querySelectorAll("nav a").forEach(a => {
+        a.removeEventListener("click", handleNavClick)
+      })
+      document.querySelectorAll(".view-project-btn").forEach(btn => {
+        btn.removeEventListener("click", handleViewProjectClick)
+      });
+      if (wheelTimeout) {
+        clearTimeout(wheelTimeout)
+      }
+    }
+  }, [currentPage, projects])
+
+  if (currentPage === "projects") {
+    return (
+      <div className="app-container">
+        <header className="header" style={{ position: "fixed", top: "20px", left: "20px", zIndex: 1001 }}>
+          <button className="back-btn" onClick={() => setCurrentPage("landing")} style={{ background: "none", border: "1px solid currentColor", padding: "10px 20px", cursor: "pointer", borderRadius: "4px", color: "inherit" }}>&larr; Back</button>
+        </header>
+        <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        <ProjectsPage projects={projects} isDarkMode={isDarkMode} />
+      </div>
+    );
+  }
 
   return (
     <div className="app-container">
